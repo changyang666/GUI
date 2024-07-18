@@ -87,23 +87,24 @@ class TeamInputGUI(QWidget):
     def submit_data(self):
         # Prepare data for API
         data = []
+        feature_names = ["Agent", "Rating", "ACS", "KAST", "ADR"]
         
-        team_names = ["CT team", "T team"]
-        for i, team in enumerate(self.team_inputs):
-            data["teams"][team_names[i]] = []
+        for team in self.team_inputs:
             for player in team:
-                player_data = {f"Feature {k+1}": feature.text() for k, feature in enumerate(player)}
-                data["teams"][team_names[i]].append(player_data)
+                player_data = {feature_names[i]: feature.text() for i, feature in enumerate(player)}
+                data.append(player_data)
 
         # Send data to API
         try:
-            # Replace 'https://api.example.com/submit' with your actual API endpoint
-            response = requests.post('http://0.0.0.0:8000/predict', json=data)
+            # Replace with your actual API endpoint
+            response = requests.post('http://127.0.0.1:8000/predict', json=data)
+            
             response.raise_for_status()  # Raises an HTTPError for bad responses
             
-            # Display API response
-            result_text = f"API Response:\n{response.text}"
-            self.result_display.setPlainText(result_text)
+            # Parse and display API response
+            result = response.json()
+            result_text = json.dumps(result, indent=2)
+            self.result_display.setPlainText(f"API Response:\n{result_text}")
         except requests.exceptions.RequestException as e:
             # Handle API errors
             error_text = f"Error communicating with API: {str(e)}"
