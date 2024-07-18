@@ -95,7 +95,7 @@ class TeamInputGUI:
         json_data = json.dumps({"data": data})
         
         try:
-            response = requests.post(f'http://{"127.0.0.1" if self.api.get() == "XGBoost" else "127.0.0.2"}:8000/predict', data=json_data)
+            response = requests.post(f'http://{"xgb-val-predict.onrender.com" if self.api.get() == "XGBoost" else "api-dev-gsts.onrender.com"}/predict', data=json_data)
             response.raise_for_status()
             
             result = response.json()
